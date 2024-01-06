@@ -15,16 +15,20 @@ jobs:
         uses: actions/setup-java@v4.0.0
         with:
           java-version: "17"
-          distribution: "adopt"
-      - name: changing permission
-        run: chmod +x ./gradlew
+          distribution: "adopt"     
+      - name: Build APK
+        run: |
+          chmod +x ./gradlew  # Ensure gradlew has execute permissions
+          ./gradlew assembleDebug  # Adjust the task based on your build configuration
 
-      - name: Build with Gradle
-        run: ./gradlew build 
+      - name: Create APK Directory
+        run: mkdir -p ${{ github.workspace }}/apks
+
+      - name: Copy APK to Directory
+        run: cp app/build/outputs/apk/debug/app-debug.apk ${{ github.workspace }}/apks/      
         
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4.0.0
         with:
           name: AndroidCICD.apk
-          path: app/build/outputs/apk/debug/app-debug.apk
-      
+          path: app/build/outputs/apk/debug/app-debug.apk      
